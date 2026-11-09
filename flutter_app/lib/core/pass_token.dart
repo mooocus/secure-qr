@@ -43,7 +43,7 @@ class PassToken {
     if (exp - iat != passValiditySeconds || nbf > iat || exp <= nowSeconds()) {
       throw const FormatException('Expired or invalid JWT lifetime');
     }
-    if (payload['token_use'] != 'facility_access') {
+    if (payload['token_use'] != 'facility_identity') {
       throw const FormatException('Unexpected token type');
     }
     return PassToken(token: token, jti: jti, issuedAt: iat, expiresAt: exp);

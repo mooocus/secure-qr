@@ -157,7 +157,7 @@ class _PassScreenState extends State<PassScreen>
       if (!_refreshing && !_refreshFailed) {
         _refresh();
       }
-    }
+    } 
 
     // Update the countdown.
     if (mounted) {
@@ -212,7 +212,19 @@ class _PassScreenState extends State<PassScreen>
       // It must NOT create a fake or locally
       // generated access token.
 
+      
+      debugPrint('========== QR DEBUG ==========');
+      debugPrint('Requesting signed JWT from FastAPI...');
+      debugPrint('Current stage: ${app.stage}');
+      debugPrint('User profile exists: ${app.user != null}');
+      debugPrint('Session unlocked: ${app.isUnlocked}');
+
       final newPass = await app.generatePass();
+
+      debugPrint('QR JWT received successfully');
+      debugPrint('JWT expires at: ${newPass.expiresAt}');
+      debugPrint('================================');
+
 
       if (!mounted ||
           requestId != _requestGeneration) {
@@ -236,9 +248,16 @@ class _PassScreenState extends State<PassScreen>
         _refreshFailed = false;
       });
 
-    } catch (e) {
-      if (!mounted ||
-          requestId != _requestGeneration) {
+    } catch (e, stackTrace) {
+      // Development debugging information.
+      // Do not print JWTs, Firebase ID tokens, or private keys.
+      debugPrint('========== QR GENERATION ERROR ==========');
+      debugPrint('Error type: ${e.runtimeType}');
+      debugPrint('Error details: $e');
+      debugPrintStack(stackTrace: stackTrace);
+      debugPrint('=========================================');
+
+      if (!mounted || requestId != _requestGeneration) {
         return;
       }
 
@@ -247,13 +266,10 @@ class _PassScreenState extends State<PassScreen>
         _refreshFailed = true;
       });
 
-      // AppState may navigate away if the
-      // backend or user session is unavailable.
-      if (context.read<AppState>().stage ==
-          AppStage.pass) {
+      if (context.read<AppState>().stage == AppStage.pass) {
         showMessage(
           context,
-          'Unable to generate secure QR. Please retry.',
+          'QR generation failed. Check Flutter terminal.',
         );
       }
 
@@ -316,7 +332,8 @@ class _PassScreenState extends State<PassScreen>
       body: SafeArea(
         child: Padding(
           padding: kPagePadding,
-          child: Column(
+          child: SingleChildScrollView(
+            child: Column(
             crossAxisAlignment:
                 CrossAxisAlignment.start,
             children: [
@@ -370,7 +387,9 @@ class _PassScreenState extends State<PassScreen>
                 style: AppText.small,
               ),
 
-              const SizedBox(height: 31),
+              const SizedBox(height: 18),
+
+              const SizedBox(height: 18),
 
               // QR CODE
               Center(
@@ -460,15 +479,14 @@ class _PassScreenState extends State<PassScreen>
                   ),
                 ),
 
-              const Spacer(),
+              const SizedBox(height: 20),
 
               if (!canShowQR)
                 SizedBox(
                   width: double.infinity,
                   child: Text(
                     _refreshFailed
-                        ? 'Unable to contact the QR '
-                          'service. Try again.'
+                        ? 'Unable to generate the QR pass. Try again.'
                         : 'Waiting for a valid '
                           'signed access credential.',
                     textAlign: TextAlign.center,
@@ -478,6 +496,7 @@ class _PassScreenState extends State<PassScreen>
 
               const SizedBox(height: 16),
             ],
+          ),
           ),
         ),
       ),
