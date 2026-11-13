@@ -19,7 +19,7 @@ class EnrolSubmittedScreen extends StatelessWidget {
     };
     return StateScaffold(
       footer: [
-        Text("You'll receive a notification once your enrolment is approved.",
+        Text("An administrator will review your enrolment. You can log in once it is approved.",
             textAlign: TextAlign.center, style: AppText.footnote),
       ],
       children: [

@@ -36,7 +36,7 @@ class LogoutScreen extends StatelessWidget {
         const SizedBox(height: 34),
         Text('Log Out?', textAlign: TextAlign.center, style: AppText.stateTitle),
         const SizedBox(height: 8),
-        Text('Your device key will be removed. You will need to verify again next time.',
+        Text('You will need to log in and verify again next time.',
             textAlign: TextAlign.center, style: AppText.body),
       ],
     );

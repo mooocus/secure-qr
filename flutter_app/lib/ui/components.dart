@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'tokens.dart';
 
 /// Set to false to hide the "→ Demo: …" buttons from the Figma wireframe.
-const bool kDemoMode = true;
+const bool kDemoMode = false;
 
 const kPagePadding = EdgeInsets.symmetric(horizontal: 24);
 
