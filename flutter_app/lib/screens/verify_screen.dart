@@ -120,18 +120,15 @@ class _VerifyScreenState extends State<VerifyScreen> {
 
     if (api is MockBackendApi) {
       api.simulateUnreachableOnce = true;
+      _verify();
+    } else {
+      showMessage(
+        context,
+        'Backend-unreachable simulation is available only in mock mode. '
+        'To test the real FastAPI connection failure, stop the backend '
+        'and retry QR generation.',
+      );
     }
-
-    // Retained for compatibility with your
-    // existing development simulation.
-    //
-    // This does not reliably simulate a
-    // FastAPI failure when using FirebaseBackendApi.
-    app.keys.deleteKey().then((_) {
-      if (mounted) {
-        _verify();
-      }
-    });
   }
 
   // --------------------------------------------------
